@@ -36,15 +36,15 @@ def calaulate_volum(avg):
          music_control.set_volume(0.7)
          print('0.7')
      elif avg <= 250 and avg > 210:
-         music_control.set_volume(0.7)
+         music_control.set_volume(0.6)
          print('0.6')
-     elif avg <= 210 and avg > 170:
-         music_control.set_volume(0.7)
+     elif avg <= 210 and avg > 120:
+         music_control.set_volume(0.5)
          print('0.5')
-     elif avg <= 170 and avg > 120:
+     elif avg <= 120 and avg > 80:
          music_control.set_volume(0.4)
          print('0.4')
-     elif avg <= 120 and avg > 70:
+     elif avg <= 80 and avg > 70:
          music_control.set_volume(0.3)
          print('0.3')
      elif avg <= 70 and avg > 30:
@@ -96,7 +96,7 @@ def speed_detection():
     cap = cv2.VideoCapture(0)
 
     # todo playMusic
-    music_control.play_music('ff.mp3')
+    music_control.play_music('Ava_nagila.mp3')
     # todo setvolume 0.1]\4/
     music_control.set_volume_start(0)
     All_mph_list = []
@@ -210,7 +210,7 @@ def speed_detection():
                             pass
 
                 # todo setvolume
-                if counter == 0 or is_one_not_dance(mph_list) or mph / counter < 50:
+                if counter == 0 or is_one_not_dance(mph_list):
 
                     music_control.set_volume(0)
                     avg = 0
@@ -228,7 +228,32 @@ def speed_detection():
 
 
         # Display all images
+        img1 = cv2.imread('image.jpg')
+
+        # img = cv2.imread('image.jpg', 0)
+        # cv2.imshow('im', img)
+        # cv2.imshow('res', img1)
+        # print("size")
+        # print(img.shape)
+        # dst = cv2.addWeighted(img, frame)
+        # cv2.imshow('dst', dst)
+
+        # cap1 = cv2.VideoCapture('vtest.avi')
+        #
+        # while (cap1.isOpened()):
+        #     frame1 = cap1.read()
+        #
+        #     gray = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
+        #
+        #     cv2.imshow('framew', gray)
+        #     if cv2.waitKey(1) & 0xFF == ord('q'):
+        #         break
+
+        # cap.release()
+        # cv2.destroyAllWindows()
+        # cv2.imshow('ss', frame)
         cv2.imshow('original', frame)
+
         cv2.imshow('opening/dilation', dilation)
         cv2.imshow('background subtraction', fgmask)
 
