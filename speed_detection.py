@@ -11,6 +11,53 @@ import music_control
 from kalman_filter import KalmanFilter
 from tracker import Tracker
 
+
+
+def is_one_not_dance(mp_list):
+    pass
+
+def conclusion(list_of_mph):
+    pass
+
+
+def calaulate_volum(avg):
+     print("========vol=================")
+
+     if avg > 500:
+         music_control.set_volume(1)
+         print('1')
+     elif avg <= 500 and avg > 400:
+         print('0.1')
+         music_control.set_volume(0.9)
+     elif avg <= 400 and avg > 320:
+         music_control.set_volume(0.8)
+         print('0.8')
+     elif avg <= 320 and avg > 250:
+         music_control.set_volume(0.7)
+         print('0.7')
+     elif avg <= 250 and avg > 210:
+         music_control.set_volume(0.7)
+         print('0.6')
+     elif avg <= 210 and avg > 170:
+         music_control.set_volume(0.7)
+         print('0.5')
+     elif avg <= 170 and avg > 120:
+         music_control.set_volume(0.4)
+         print('0.4')
+     elif avg <= 120 and avg > 70:
+         music_control.set_volume(0.3)
+         print('0.3')
+     elif avg <= 70 and avg > 30:
+         music_control.set_volume(0.2)
+         print('0.2')
+     elif avg <= 30 and avg > 1:
+         music_control.set_volume(0.1)
+         print('0.1')
+     elif avg <= 1:
+         music_control.set_volume(0)
+         print('0')
+
+
 def speed_detection():
     FPS = 30
     '''
@@ -23,7 +70,7 @@ def speed_detection():
 		Speed limit of urban freeways in California (50-65 MPH)
 	'''
     # ToDo small the param
-    HIGHWAY_SPEED_LIMIT = 0
+    HIGHWAY_SPEED_LIMIT = 40
 
     # Initial background subtractor and text font
     fgbg = cv2.createBackgroundSubtractorMOG2()
@@ -49,10 +96,17 @@ def speed_detection():
     cap = cv2.VideoCapture(0)
 
     # todo playMusic
-    music_control.play_music('mysong.mp3')
-    # todo setvolume 0.1
-    music_control.set_volume(0.1)
+    music_control.play_music('ff.mp3')
+    # todo setvolume 0.1]\4/
+    music_control.set_volume_start(0)
+    All_mph_list = []
+
     while True:
+        if not music_control.get_busy():
+            print(All_mph_list)
+            conclusion(All_mph_list)
+            break
+
         centers = []
         frame_start_time = datetime.utcnow()
         ret, frame = cap.read()
@@ -74,80 +128,102 @@ def speed_detection():
 
         # todo
         _, contours, hierarchy = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        if len(contours) < 2:
+            music_control.set_volume(0)
+        else:
+            # Find centers of all detected objects
+            for cnt in contours:
+                x, y, w, h = cv2.boundingRect(cnt)
 
-        # Find centers of all detected objects
-        for cnt in contours:
-            x, y, w, h = cv2.boundingRect(cnt)
+                if y > Y_THRESH:
+                    if w >= blob_min_width_near and h >= blob_min_height_near:
+                        center = np.array([[x + w / 2], [y + h / 2]])
+                        centers.append(np.round(center))
 
-            if y > Y_THRESH:
-                if w >= blob_min_width_near and h >= blob_min_height_near:
-                    center = np.array([[x + w / 2], [y + h / 2]])
-                    centers.append(np.round(center))
+                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                else:
+                    if w >= blob_min_width_far and h >= blob_min_height_far:
+                        center = np.array([[x + w / 2], [y + h / 2]])
+                        centers.append(np.round(center))
 
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
-            else:
-                if w >= blob_min_width_far and h >= blob_min_height_far:
-                    center = np.array([[x + w / 2], [y + h / 2]])
-                    centers.append(np.round(center))
+                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            if centers:
+                tracker.update(centers)
 
-        if centers:
-            tracker.update(centers)
+                mph = 0
+                counter = 0
+                mph_list = []
 
-            mph = 0
-            counter = 10
-            for vehicle in tracker.tracks:
-                if len(vehicle.trace) > 1:
-                    for j in range(len(vehicle.trace) - 1):
-                        # Draw trace line
-                        x1 = vehicle.trace[j][0][0]
-                        y1 = vehicle.trace[j][1][0]
-                        x2 = vehicle.trace[j + 1][0][0]
-                        y2 = vehicle.trace[j + 1][1][0]
+                for vehicle in tracker.tracks:
+                    print(len(vehicle.trace))
+                    if len(vehicle.trace) > 1:
+                        for j in range(len(vehicle.trace) - 1):
+                            # Draw trace line
+                            x1 = vehicle.trace[j][0][0]
+                            y1 = vehicle.trace[j][1][0]
+                            x2 = vehicle.trace[j + 1][0][0]
+                            y2 = vehicle.trace[j + 1][1][0]
 
-                        cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 255), 2)
+                            cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 255), 2)
 
-                    try:
-                        '''
-							TODO: account for load lag
-						'''
+                        try:
+                            '''
+                                TODO: account for load lag
+                            '''
 
-                        trace_i = len(vehicle.trace) - 1
+                            trace_i = len(vehicle.trace) - 1
 
-                        trace_x = vehicle.trace[trace_i][0][0]
-                        trace_y = vehicle.trace[trace_i][1][0]
+                            trace_x = vehicle.trace[trace_i][0][0]
+                            trace_y = vehicle.trace[trace_i][1][0]
 
-                        # Check if tracked object has reached the speed detection line
-                        if trace_y <= Y_THRESH + 25 and trace_y >= Y_THRESH - 25 and not vehicle.passed:
-                            # cv2.putText(frame, 'I PASSED!', (int(trace_x), int(trace_y)), font, 1, (0, 255, 255), 1,
-                            #             cv2.LINE_AA)
-                            vehicle.passed = True
+                            # Check if tracked object has reached the speed detection line
+                            # if trace_y <= Y_THRESH + 25 and trace_y >= Y_THRESH - 25:
+                            if True:
+                                # cv2.putText(frame, 'I PASSED!', (int(trace_x), int(trace_y)), font, 1, (0, 255, 255), 1,
+                                #             cv2.LINE_AA)
+                                # vehicle.passed = True
 
-                            load_lag = (datetime.utcnow() - frame_start_time).total_seconds()
+                                load_lag = (datetime.utcnow() - frame_start_time).total_seconds()
 
-                            time_dur = (datetime.utcnow() - vehicle.start_time).total_seconds() - load_lag
-                            time_dur /= 60
-                            time_dur /= 60
+                                time_dur = (datetime.utcnow() - vehicle.start_time).total_seconds() - load_lag
+                                time_dur /= 60
+                                time_dur /= 60
 
-                            vehicle.mph = ROAD_DIST_MILES / time_dur
+                                vehicle.mph = ROAD_DIST_MILES / time_dur
+                                print("===mph==========")
+                                print(vehicle.mph)
 
-                            # If calculated speed exceeds speed limit, save an image of speeding car
+                                mph_list.append(vehicle.mph)
+
+
+                                # If calculated speed exceeds speed limit, save an image of speeding car
                             if vehicle.mph > HIGHWAY_SPEED_LIMIT:
                                 mph += int(vehicle.mph)
-                                counter += 1
-
-                        if vehicle.passed:
-                            mph += int(vehicle.mph)
                             counter += 1
 
-                    except:
-                        pass
+                            # if vehicle.passed:
+                            #     mph += int(vehicle.mph)
+                            #     counter += 1
 
-            # todo setvolume
-            avg = mph / counter
-            music_control.set_volume(avg/100)
-            print(avg)
+                        except:
+                            pass
+
+                # todo setvolume
+                if counter == 0 or is_one_not_dance(mph_list) or mph / counter < 50:
+
+                    music_control.set_volume(0)
+                    avg = 0
+                else:
+                    avg = mph / counter
+                    print("==========avg==============")
+                    print(avg)
+                    calaulate_volum(avg)
+
+                All_mph_list.append((avg, music_control.get_volume()))
+
+                    # music_control.set_volume(avg/100)
+                    # print(avg)
 
 
 
