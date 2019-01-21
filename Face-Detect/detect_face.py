@@ -9,7 +9,7 @@ FACE_CASCADE=cv2.CascadeClassifier(CASCADE)
 def detect_faces(image_path):
 
 
-	image = cv2.imread('dd.png')
+	image = cv2.imread(image_path)
 	image_grey=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 
 	faces = FACE_CASCADE.detectMultiScale(image_grey,scaleFactor=1.16,minNeighbors=5,minSize=(25,25),flags=0)
@@ -27,4 +27,4 @@ def detect_faces(image_path):
 	if (cv2.waitKey(0) & 0xFF == ord('q')) or (cv2.waitKey(0) & 0xFF == ord('Q')):
 		cv2.destroyAllWindows()
 
-detect_faces("face.jpg")
+
