@@ -227,32 +227,10 @@ def speed_detection():
 
 
         # Display all images
-        img1 = cv2.imread('image.jpg')
 
-        # img = cv2.imread('image.jpg', 0)
-        # cv2.imshow('im', img)
-        # cv2.imshow('res', img1)
-        # print("size")
-        # print(img.shape)
-        # dst = cv2.addWeighted(img, frame)
-        # cv2.imshow('dst', dst)
 
-        # cap1 = cv2.VideoCapture('vtest.avi')
-        #
-        # while (cap1.isOpened()):
-        #     frame1 = cap1.read()
-        #
-        #     gray = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
-        #
-        #     cv2.imshow('framew', gray)
-        #     if cv2.waitKey(1) & 0xFF == ord('q'):
-        #         break
 
-        # cap.release()
-        # cv2.destroyAllWindows()
-        # cv2.imshow('ss', frame)
         cv2.imshow('original', frame)
-
         cv2.imshow('opening/dilation', dilation)
         cv2.imshow('background subtraction', fgmask)
 
