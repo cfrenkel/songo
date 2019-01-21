@@ -1,68 +1,22 @@
+import ctypes
 import cv2
 import tkinter as tk
 import matplotlib.pyplot as plt
 from PIL import Image, ImageTk
-from eventlet.green import os
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
 
 class Conclusion(tk.Frame):
 
-    def __init__(self, master=None):
+    def __init__(self, master, speed, volume):
         super().__init__(master)
         self.master = master
         self.pack()
-        self.create_widgets()
-        # self.x([23, 54, 6, 88, 34, 32, 5, 7])
 
-    def create_widgets(self):
-
-        self.cap1 = cv2.VideoCapture('videoplayback.mp4')
-        self.lmain1 = tk.Label(root, text="hi")
-        self.lmain1.pack()
-        self.init_canvas()
-        self.x([23, 54, 6, 88, 34, 32, 5, 7])
-
-        self.video_stream()
-
-
-    def init_canvas(self):
-        import ctypes
         user32 = ctypes.windll.user32
-        screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
-        back = tk.Frame(width=screensize[0], height=screensize[1], bg='white')
-        back.pack()
-        # self.vid = MyVideoCapture(video_source)
-        # self.vid = cv2.VideoCapture('mySong.mp4')
-        # self.vid.isOpened()
-        # video_source = 'mySong.mp4'
-        # window_title = "Tkinter and OpenCV"
-        # self.window# = window
-        # self.window.title(window_title)
-        # self.video_source = video_source
-        #
-        # # open video source (by default this will try to open the computer webcam)
-        # self.vid = MyVideoCapture(self.video_source)
-        #
-        # # Create a canvas that can fit the above video source size
-        # self.canvas = tkinter.Canvas(window, width=self.vid.width, height=self.vid.height)
-        # self.canvas.pack()
-        #
-        # # Button that lets the user take a snapshot
-        # self.btn_snapshot = tkinter.Button(window, text="Snapshot", width=50, command=self.snapshot)
-        # self.btn_snapshot.pack(anchor=tkinter.CENTER, expand=True)
-        #
-        # # After it is called once, the update method will be automatically called every delay milliseconds
-        # self.delay = 15
-        # self.update()
-        # self.window.mainloop()
-
-        # self.window = window
-        #
-        #
-        # self.window.title(window_title)
-        #
-        # self.window.mainloop()
+        self.screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+        self.speed, self.volume = speed, volume
+        self.conclusion_wind()
 
     def video_stream(self):
         _, frame1 = self.cap1.read()
@@ -73,45 +27,34 @@ class Conclusion(tk.Frame):
         self.lmain1.configure(image=imgtk1)
         self.lmain1.after(1, self.video_stream)
 
-    def x(self, speed):
-        self.f1 = plt.figure(figsize=(5, 5))
-        self.canvas1 = FigureCanvasTkAgg(self.f1, self)
-        self.canvas1.get_tk_widget().pack(side="left")
+    def conclusion_wind(self):
+        back = tk.Frame(width=self.screensize[0], height=self.screensize[1], bg='white')
+        self.set_background_video()
+        back.pack()
 
-        plt.plot(speed, speed)
-        self.canvas1.draw()
-        self.canvas1.draw()
+        self.set_text()
+        self.set_graph()
 
-        self.f2 = plt.figure(figsize=(5, 5))
-        self.canvas2 = FigureCanvasTkAgg(self.f2, self)
-        self.canvas2.get_tk_widget().pack(side="right")
+    def set_background_video(self):
+        self.cap1 = cv2.VideoCapture('videoplayback.mp4')
+        self.lmain1 = tk.Label(root, text="hi")
+        self.lmain1.pack(side="top")
+        self.video_stream()
 
-        plt.plot(speed)
-        self.canvas2.draw()
 
-        # self.video_stream()
-        # self.f = plt.figure(figsize=(5, 5))
-        # self.canvas = FigureCanvasTkAgg(self.f, self)
-        # self.canvas.get_tk_widget().pack(side="left")
-        #
-        # a = plt.plot(speed)
-        # self.canvas.draw()
-        #
-        # b = plt.plot(speed[3:6])
-        # self.canvas.draw()
-    def set_back(self):
-        pass
-
-    def set_wind(self):
-        # set frame
-
-        # write sucsess
+    def set_text(self):
         pass
 
     def set_graph(self):
-        pass
+        size_graph = plt.figure(figsize=(5, 5))
+        result_graph = FigureCanvasTkAgg(size_graph, self)
+        result_graph.get_tk_widget().pack(side="left")
+
+        plt.plot([self.speed, self.volume])
+
+        result_graph.draw()
 
 
 root = tk.Tk()
-app = Conclusion(master=root)
+app = Conclusion(master=root, speed=[23, 54, 6, 88, 34, 32, 5, 7], volume=[4,33,8,2,67,98,46,3])
 app.mainloop()
