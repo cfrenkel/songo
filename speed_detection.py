@@ -61,10 +61,9 @@ def calaulate_volum(avg):
 def speed_detection():
     FPS = 30
     '''
-		Distance to line in road: ~0.025 miles
-	'''
-    # ToDo small the param
-    ROAD_DIST_MILES = 0.025
+        Distance to line in road: ~0.025 miles
+    '''
+    ROAD_DIST_MILES = 0.0025
 
     '''
 		Speed limit of urban freeways in California (50-65 MPH)
