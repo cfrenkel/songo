@@ -103,6 +103,7 @@ def speed_detection():
 
     while True:
         if not music_control.get_busy():
+            print(All_mph_list)
             conclusion(All_mph_list)
             break
 
@@ -194,7 +195,6 @@ def speed_detection():
                                 print(vehicle.mph)
 
                                 mph_list.append(vehicle.mph)
-                                All_mph_list.append(vehicle.mph)
 
 
                                 # If calculated speed exceeds speed limit, save an image of speeding car
@@ -210,14 +210,20 @@ def speed_detection():
                             pass
 
                 # todo setvolume
-                if counter == 0 or is_one_not_dance(mph_list):
+                if counter == 0 or is_one_not_dance(mph_list) or mph / counter < 50:
+
                     music_control.set_volume(0)
+                    avg = 0
                 else:
                     avg = mph / counter
+                    print("==========avg==============")
+                    print(avg)
                     calaulate_volum(avg)
 
-                # music_control.set_volume(avg/100)
-                    print(avg)
+                All_mph_list.append((avg, music_control.get_volume()))
+
+                    # music_control.set_volume(avg/100)
+                    # print(avg)
 
 
 
