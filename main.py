@@ -1,5 +1,5 @@
 from speed_detection import speed_detection
 
+from open_screen import OpenScreen
 # todo ui interface
-print("aaaaa")
-speed_detection()
+o = OpenScreen()

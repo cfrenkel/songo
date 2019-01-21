@@ -1,8 +1,7 @@
-import Algorithmia
 from PIL import ImageTk, Image
+from main_screem import MainWindow
 import cv2
 import tkinter as tk
-import imageio
 
 root = tk.Tk()
 
@@ -15,9 +14,11 @@ class OpenScreen(tk.Frame):
         # self.canvas = tk.Canvas(width=300, height=200, bg='yellow')
         # self.canvas.grid(row=0, column=1)
 
+        self.flag = False
+
+        self.count = 500
         self.cap1 = cv2.VideoCapture(0)
         self.video_stream()
-        self.flag = False
         root.mainloop()
 
     def video_stream(self):
@@ -31,14 +32,18 @@ class OpenScreen(tk.Frame):
         self.flag = self.analyze_picture(img1)
         if not self.flag:
             self.lmain1.after(1, self.video_stream)
+        else:
+            # todo --- wellcome message ---
+            self.desplay_wellcome()
+            root.destroy()
+            main_window = MainWindow()
+
+    def desplay_wellcome(self):
+        pass
 
     def analyze_picture(self, image):
-        print("here2")
-        input = "first.png"
-        client = Algorithmia.client('simpNpbFDF0YSVFxvB9WIWWTTLV1')
-        algo = client.algo('deeplearning/GenderClassification/2.0.0')
-        print(algo.pipe(input).result)
-        return True
+        if self.count == 0:
+            return True
+        self.count -= 1
 
 
-o = OpenScreen()
