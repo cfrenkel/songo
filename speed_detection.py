@@ -11,42 +11,14 @@ import music_control
 from kalman_filter import KalmanFilter
 from tracker import Tracker
 
-FPS = 30
-'''
-    Distance to line in road: ~0.025 miles
-'''
-ROAD_DIST_MILES = 0.0025
-'''
-	Speed limit of urban freeways in California (50-65 MPH)
-'''
-# ToDo small the param
-HIGHWAY_SPEED_LIMIT = 40
-# Initial background subtractor and text font
-fgbg = cv2.createBackgroundSubtractorMOG2()
-font = cv2.FONT_HERSHEY_PLAIN
-centers = []
-# y-cooridinate for speed detection line
-Y_THRESH = 242
-blob_min_width_far = 6
-blob_min_height_far = 6
-blob_min_width_near = 18
-blob_min_height_near = 18
-frame_start_time = None
-# Create object tracker
-tracker = Tracker(80, 3, 2, 1)
-# Capture livestream
-# cap = cv2.VideoCapture(0)
-# todo playMusic
-# music_control.play_music('mysong.mp3')
-# # todo setvolume 0.1]\4/
-# music_control.set_volume_start(0)
-All_mph_list = []
+
 
 def is_one_not_dance(mp_list):
     pass
 
 def conclusion(list_of_mph):
     pass
+
 
 def calaulate_volum(avg):
      print("========vol=================")
@@ -64,15 +36,15 @@ def calaulate_volum(avg):
          music_control.set_volume(0.7)
          print('0.7')
      elif avg <= 250 and avg > 210:
-         music_control.set_volume(0.7)
+         music_control.set_volume(0.6)
          print('0.6')
-     elif avg <= 210 and avg > 170:
-         music_control.set_volume(0.7)
+     elif avg <= 210 and avg > 120:
+         music_control.set_volume(0.5)
          print('0.5')
-     elif avg <= 170 and avg > 120:
+     elif avg <= 120 and avg > 80:
          music_control.set_volume(0.4)
          print('0.4')
-     elif avg <= 120 and avg > 70:
+     elif avg <= 80 and avg > 70:
          music_control.set_volume(0.3)
          print('0.3')
      elif avg <= 70 and avg > 30:
