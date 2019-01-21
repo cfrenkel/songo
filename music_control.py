@@ -34,3 +34,6 @@ def get_busy():
 
     # print(mixer.music.get_busy())
     return mixer.music.get_busy()
+
+def get_volume():
+    return mixer.music.get_volume()

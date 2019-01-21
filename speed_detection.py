@@ -154,8 +154,6 @@ def speed_detection():
                 counter = 0
                 mph_list = []
 
-                print("=======len=============")
-
                 for vehicle in tracker.tracks:
                     print(len(vehicle.trace))
                     if len(vehicle.trace) > 1:
