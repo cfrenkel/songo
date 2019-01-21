@@ -7,8 +7,7 @@ CASCADE="Face_cascade.xml"
 FACE_CASCADE=cv2.CascadeClassifier(CASCADE)
 
 def detect_faces(image_path):
-
-
+	print(image_path)
 	image = cv2.imread(image_path)
 	image_grey=cv2.cvtColor(image,cv2.COLOR_BGR2GRAY)
 
@@ -32,4 +31,4 @@ def detect_faces(image_path):
 
 	return count_of_face
 
-print(detect_faces('fa.png'))
+# print(detect_faces('../faces.png'))

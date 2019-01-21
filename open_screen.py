@@ -1,3 +1,7 @@
+import ctypes
+import time
+
+import facedetect.detect_face
 from PIL import ImageTk, Image
 from main_screem import MainWindow
 import cv2
@@ -8,21 +12,35 @@ root = tk.Tk()
 
 class OpenScreen(tk.Frame):
     def __init__(self):
-        self.lmain1 = tk.Label(root, text="hi")
-        self.lmain1.grid(row=0, column=0)
+        user32 = ctypes.windll.user32
+        self.screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
 
-        myimage = tk.PhotoImage(file='dance.gif')
+        back = tk.Frame(width=self.screensize[0], height=self.screensize[1], bg='white')
+
+        myimage = tk.PhotoImage(file='logo1.png')
         label = tk.Label(image=myimage)
         label.image = myimage  # the reference
-        label.grid(row=0, column=1)
+        label.pack(side=tk.LEFT)
+
+        self.lmain1 = tk.Label(root, text="hi")
+        self.lmain1.pack(side=tk.LEFT)
+
+        myimage1 = tk.PhotoImage(file='welcome2.png')
+        label1 = tk.Label(image=myimage1)
+        label1.image = myimage  # the reference
+        label1.pack(side=tk.LEFT)
+
+        back.pack()
 
         self.flag = False
 
         self.count = 100
+        self.count1 = 0
 
         self.cap1 = cv2.VideoCapture(0)
 
         self.video_stream()
+
         root.mainloop()
 
     def video_stream(self):
@@ -32,20 +50,26 @@ class OpenScreen(tk.Frame):
         imgtk1 = ImageTk.PhotoImage(image=img1)
         self.lmain1.imgtk = imgtk1
         self.lmain1.configure(image=imgtk1)
-        self.flag = self.analyze_picture()
+        self.flag = self.analyze_picture(frame1)
         if not self.flag:
             self.lmain1.after(1, self.video_stream)
         else:
             self.cap1.release()
+            # todo pre
             root.destroy()
             main = MainWindow()
 
     def desplay_wellcome(self):
         pass
 
-    def analyze_picture(self):
+    def analyze_picture(self, frame):
+        print("in analyze .... ")
+        if self.count > 0:
+            self.count -= 1
+            return False
         if self.count == 0:
+            cv2.imwrite('faces.png', frame)
             return True
-        self.count -= 1
+
 
 
