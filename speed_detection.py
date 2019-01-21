@@ -11,6 +11,43 @@ import music_control
 from kalman_filter import KalmanFilter
 from tracker import Tracker
 
+
+def calaulate_volum(avg):
+     print("========vol=================")
+     if  avg > 700:
+         music_control.set_volume(1)
+         print('1')
+     elif avg < 700 and avg > 630:
+         print('0.9')
+         music_control.set_volume(0.9)
+     elif avg < 630 and avg > 560:
+         music_control.set_volume(0.8)
+         print('0.8')
+     elif avg < 560 and avg > 490:
+         music_control.set_volume(0.7)
+         print('0.7')
+     elif avg < 490 and avg > 420:
+         music_control.set_volume(0.6)
+         print('0.6')
+     elif avg < 420 and avg > 350:
+        music_control.set_volume(0.5)
+        print('0.5')
+     elif avg < 350 and avg > 280:
+        music_control.set_volume(0.4)
+        print('0.4')
+     elif avg < 280 and avg > 210:
+        music_control.set_volume(0.3)
+        print('0.3')
+     elif avg < 210 and avg > 140:
+        music_control.set_volume(0.2)
+        print('0.2')
+     elif avg < 140 and avg > 1:
+        music_control.set_volume(0.1)
+        print('0.1')
+     elif avg < 1:
+        music_control.set_volume(0.0)
+        print('0.0')
+
 def speed_detection():
     FPS = 30
     '''
@@ -23,7 +60,7 @@ def speed_detection():
 		Speed limit of urban freeways in California (50-65 MPH)
 	'''
     # ToDo small the param
-    HIGHWAY_SPEED_LIMIT = 0
+    HIGHWAY_SPEED_LIMIT = 40
 
     # Initial background subtractor and text font
     fgbg = cv2.createBackgroundSubtractorMOG2()
@@ -49,9 +86,9 @@ def speed_detection():
     cap = cv2.VideoCapture(0)
 
     # todo playMusic
-    music_control.play_music('mysong.mp3')
-    # todo setvolume 0.1
-    music_control.set_volume(0.1)
+    music_control.play_music('ff.mp3')
+    # todo setvolume 0.1]\4/
+    music_control.set_volume(0)
     while True:
         centers = []
         frame_start_time = datetime.utcnow()
@@ -90,14 +127,17 @@ def speed_detection():
                     center = np.array([[x + w / 2], [y + h / 2]])
                     centers.append(np.round(center))
 
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
         if centers:
             tracker.update(centers)
 
             mph = 0
-            counter = 10
+            counter = 0
+            print("=======len=============")
+
             for vehicle in tracker.tracks:
+                print(len(vehicle.trace))
                 if len(vehicle.trace) > 1:
                     for j in range(len(vehicle.trace) - 1):
                         # Draw trace line
@@ -119,10 +159,11 @@ def speed_detection():
                         trace_y = vehicle.trace[trace_i][1][0]
 
                         # Check if tracked object has reached the speed detection line
-                        if trace_y <= Y_THRESH + 25 and trace_y >= Y_THRESH - 25 and not vehicle.passed:
+                        # if trace_y <= Y_THRESH + 25 and trace_y >= Y_THRESH - 25:
+                        if True:
                             # cv2.putText(frame, 'I PASSED!', (int(trace_x), int(trace_y)), font, 1, (0, 255, 255), 1,
                             #             cv2.LINE_AA)
-                            vehicle.passed = True
+                            # vehicle.passed = True
 
                             load_lag = (datetime.utcnow() - frame_start_time).total_seconds()
 
@@ -131,23 +172,29 @@ def speed_detection():
                             time_dur /= 60
 
                             vehicle.mph = ROAD_DIST_MILES / time_dur
-
+                            print("===mph==========")
+                            print(vehicle.mph)
                             # If calculated speed exceeds speed limit, save an image of speeding car
-                            if vehicle.mph > HIGHWAY_SPEED_LIMIT:
-                                mph += int(vehicle.mph)
-                                counter += 1
-
-                        if vehicle.passed:
+                        if vehicle.mph > HIGHWAY_SPEED_LIMIT:
                             mph += int(vehicle.mph)
-                            counter += 1
+                        counter += 1
+
+                        # if vehicle.passed:
+                        #     mph += int(vehicle.mph)
+                        #     counter += 1
 
                     except:
                         pass
 
             # todo setvolume
-            avg = mph / counter
-            music_control.set_volume(avg/100)
-            print(avg)
+            if counter == 0:
+                music_control.set_volume(0)
+            else:
+                avg = mph / counter
+                calaulate_volum(avg)
+
+            # music_control.set_volume(avg/100)
+                print(avg)
 
 
 
