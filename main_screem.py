@@ -1,7 +1,7 @@
 import ctypes
 import os
 import time
-
+import faces
 from PIL import ImageTk, Image
 import cv2
 import tkinter as tk
@@ -25,10 +25,6 @@ class MainWindow(tk.Frame):
 
         self.lmain1 = tk.Label(self, text="hi")
         self.lmain1.grid(row=0, column=0)
-
-        # self.b = tk.Label(self,bg='red')
-        # # self.b.image = self.myimage2
-        # self.b.grid(row=0, column=1)
 
         self.contm = 9
 
@@ -63,22 +59,28 @@ class MainWindow(tk.Frame):
             img.append(FileDir)
             print(FileDir)
 
-        if len(img) == 1:
-            self.myimage1 = tk.PhotoImage(file=img[0])
-            print("here ..........")
-            self.b = tk.Label(self, image=self.myimage1, bg = 'red')
-            self.b.image = self.myimage2
-            self.b.grid(row=0, column=1)
+        i = 0
+        for im in img:
+            self.myimage = tk.PhotoImage(file=im)
+            self.bb = tk.Label(self, image=self.myimage, bg='red')
+            self.bb.image = self.myimage
+            r, c = self.calc(i)
+            i += 1
+            if r == -1 and c == -1:
+                break
+            self.bb.grid(row=r, column=c)
 
-        # elif len(img) == 2:
-        #
-        #     img = last_screen.big_image(img)
-        #     im = last_screen.create_collage_2(img)
-        #     self.myimage2 = tk.PhotoImage(file='coll2.png')
-        #
-        #     self.b = tk.Label(self, image=im, bg='red')
-        #     self.b.image = self.myimage2
-        #     self.b.grid(row=0, column=1)
+    def calc(self, i):
+        if i == 0:
+            return 0,1
+        if i == 1:
+            return 0,2
+        if i == 2:
+            return 0,3
+        if i == 3:
+            return 0,4
+        else:
+            return -1,-1
 
     def video_stream(self):
         _, frame1 = self.cap.read()

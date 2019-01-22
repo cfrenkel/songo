@@ -112,7 +112,7 @@ def speed_detection(frame, counter_image):
 
     # todo
     _, contours, hierarchy = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
+    avg = 0
     if len(contours) < 10:
         calaulate_volum(5)
     else:
@@ -195,7 +195,7 @@ def speed_detection(frame, counter_image):
 
             # todo setvolume
             if counter != 0:
-                avg = mph / counter
+                avg += mph / counter
                 calaulate_volum(avg)
     return counter_image, avg
 
