@@ -35,7 +35,7 @@ def last_screen(list_image):
     return create_collage_9(lm_list)
 
 
-a = 'C:\\Users\\שרה ויסברגר\\Pictures\\Camera Roll\\tt.jpg'
-g = [a, a, a, a, a, a, a, a, a]
-last_screen(g)
+# a = 'C:\\Users\\שרה ויסברגר\\Pictures\\Camera Roll\\tt.jpg'
+# g = [a, a, a, a, a, a, a, a, a]
+# last_screen(g)
 
