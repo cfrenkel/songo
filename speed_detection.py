@@ -4,17 +4,14 @@ import time
 import copy
 import os
 import glob
-import multiprocessing as mpr
 from datetime import datetime
 import music_control
-
-from kalman_filter import KalmanFilter
 from tracker import Tracker
-
 
 
 def is_one_not_dance(mp_list):
     pass
+
 
 def conclusion(list_of_mph):
     pass
@@ -36,15 +33,15 @@ def calaulate_volum(avg):
          music_control.set_volume(0.7)
          print('0.7')
      elif avg <= 250 and avg > 210:
-         music_control.set_volume(0.6)
+         music_control.set_volume(0.7)
          print('0.6')
-     elif avg <= 210 and avg > 120:
-         music_control.set_volume(0.5)
+     elif avg <= 210 and avg > 170:
+         music_control.set_volume(0.7)
          print('0.5')
-     elif avg <= 120 and avg > 80:
+     elif avg <= 170 and avg > 120:
          music_control.set_volume(0.4)
          print('0.4')
-     elif avg <= 80 and avg > 70:
+     elif avg <= 120 and avg > 70:
          music_control.set_volume(0.3)
          print('0.3')
      elif avg <= 70 and avg > 30:
@@ -61,9 +58,10 @@ def calaulate_volum(avg):
 def speed_detection():
     FPS = 30
     '''
-        Distance to line in road: ~0.025 miles
-    '''
-    ROAD_DIST_MILES = 0.0025
+		Distance to line in road: ~0.025 miles
+	'''
+    # ToDo small the param
+    ROAD_DIST_MILES = 0.025
 
     '''
 		Speed limit of urban freeways in California (50-65 MPH)
@@ -95,14 +93,13 @@ def speed_detection():
     cap = cv2.VideoCapture(0)
 
     # todo playMusic
-    music_control.play_music('Ava_nagila.mp3')
+    music_control.play_music('ff.mp3')
     # todo setvolume 0.1]\4/
     music_control.set_volume_start(0)
     All_mph_list = []
 
     while True:
         if not music_control.get_busy():
-            print(All_mph_list)
             conclusion(All_mph_list)
             break
 
@@ -154,6 +151,8 @@ def speed_detection():
                 counter = 0
                 mph_list = []
 
+                print("=======len=============")
+
                 for vehicle in tracker.tracks:
                     print(len(vehicle.trace))
                     if len(vehicle.trace) > 1:
@@ -194,6 +193,7 @@ def speed_detection():
                                 print(vehicle.mph)
 
                                 mph_list.append(vehicle.mph)
+                                All_mph_list.append(vehicle.mph)
 
 
                                 # If calculated speed exceeds speed limit, save an image of speeding car
@@ -210,26 +210,17 @@ def speed_detection():
 
                 # todo setvolume
                 if counter == 0 or is_one_not_dance(mph_list):
-
                     music_control.set_volume(0)
-                    avg = 0
                 else:
                     avg = mph / counter
-                    print("==========avg==============")
-                    print(avg)
                     calaulate_volum(avg)
 
-                All_mph_list.append((avg, music_control.get_volume()))
-
-                    # music_control.set_volume(avg/100)
-                    # print(avg)
+                # music_control.set_volume(avg/100)
+                    print(avg)
 
 
 
         # Display all images
-
-
-
         cv2.imshow('original', frame)
         cv2.imshow('opening/dilation', dilation)
         cv2.imshow('background subtraction', fgmask)
@@ -248,3 +239,5 @@ def speed_detection():
     # remove all speeding_*.png images created in runtime
     for file in glob.glob('speeding_*.png'):
         os.remove(file)
+
+
