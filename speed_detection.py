@@ -2,10 +2,6 @@ import cv2
 import numpy as np
 import time
 import copy
-import os
-import glob
-import multiprocessing as mpr
-
 from datetime import datetime
 import music_control
 
@@ -13,59 +9,49 @@ from kalman_filter import KalmanFilter
 from tracker import Tracker
 
 
-def is_one_not_dance(mp_list):
-    pass
-
-def conclusion(list_of_mph):
-    pass
-
 def calaulate_volum(avg):
-     print("========vol=================")
+    print("========vol=================")
 
-     if avg > 500:
-         music_control.set_volume(1)
-         print('1')
-     elif avg <= 500 and avg > 400:
-         print('0.1')
-         music_control.set_volume(0.9)
-     elif avg <= 400 and avg > 320:
-         music_control.set_volume(0.8)
-         print('0.8')
-     elif avg <= 320 and avg > 250:
-         music_control.set_volume(0.7)
-         print('0.7')
-     elif avg <= 250 and avg > 210:
-         music_control.set_volume(0.6)
-         print('0.6')
-     elif avg <= 210 and avg > 120:
-         music_control.set_volume(0.5)
-         print('0.5')
-     elif avg <= 120 and avg > 80:
-         music_control.set_volume(0.4)
-         print('0.4')
-     elif avg <= 80 and avg > 70:
-         music_control.set_volume(0.3)
-         print('0.3')
-     elif avg <= 70 and avg > 30:
-         music_control.set_volume(0.2)
-         print('0.2')
-     elif avg <= 30 and avg > 1:
-         music_control.set_volume(0.1)
-         print('0.1')
-     elif avg <= 1:
-         music_control.set_volume(0)
-         print('0')
-
-FPS = 30
-'''
-    Distance to line in road: ~0.025 miles
-'''
+    if avg > 500:
+        music_control.set_volume(1)
+        print('1')
+    elif avg <= 500 and avg > 400:
+        print('0.9')
+        music_control.set_volume(0.9)
+    elif avg <= 400 and avg > 320:
+        music_control.set_volume(0.8)
+        print('0.8')
+    elif avg <= 320 and avg > 250:
+        music_control.set_volume(0.7)
+        print('0.7')
+    elif avg <= 250 and avg > 210:
+        music_control.set_volume(0.6)
+        print('0.6')
+    elif avg <= 210 and avg > 120:
+        music_control.set_volume(0.5)
+        print('0.5')
+    elif avg <= 120 and avg > 80:
+        music_control.set_volume(0.4)
+        print('0.4')
+    elif avg <= 80 and avg > 70:
+        music_control.set_volume(0.3)
+        print('0.3')
+    elif avg <= 70 and avg > 30:
+        music_control.set_volume(0.2)
+        print('0.2')
+    elif avg <= 30 and avg > 18:
+        music_control.set_volume(0.1)
+        print('0.1')
+    elif avg <= 18:
+        music_control.set_volume(0)
+        print('0')
 
 FPS = 30
 '''
     Distance to line in road: ~0.025 miles
 '''
-ROAD_DIST_MILES = 0.0025
+# ToDo small the param
+ROAD_DIST_MILES = 0.025
 
 '''
     Speed limit of urban freeways in California (50-65 MPH)
@@ -95,18 +81,16 @@ tracker = Tracker(80, 3, 2, 1)
 
 # Capture livestream
 
-# todo playMusic
-music_control.play_music('Ava_nagila.mp3')
-# todo setvolume 0.1]\4/
-music_control.set_volume_start(0)
-All_mph_list = []
+# # todo playMusic
+# music_control.play_music('mysong.mp3')
+# # todo setvolume 0.1
+# music_control.set_volume(0.1)
 
 def speed_detection(frame, counter_image):
-
     if not music_control.get_busy():
-        print(All_mph_list)
-        conclusion(All_mph_list)
-        return counter_image
+        # print(All_mph_list)
+        # conclusion(All_mph_list)
+        return counter_image, 0
 
     centers = []
     frame_start_time = datetime.utcnow()
@@ -128,8 +112,9 @@ def speed_detection(frame, counter_image):
 
     # todo
     _, contours, hierarchy = cv2.findContours(dilation, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    if len(contours) < 2:
-        music_control.set_volume(0)
+
+    if len(contours) < 10:
+        calaulate_volum(5)
     else:
         # Find centers of all detected objects
         for cnt in contours:
@@ -146,7 +131,7 @@ def speed_detection(frame, counter_image):
                     center = np.array([[x + w / 2], [y + h / 2]])
                     centers.append(np.round(center))
 
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
         if centers:
             tracker.update(centers)
@@ -154,9 +139,7 @@ def speed_detection(frame, counter_image):
             mph = 0
             counter = 0
             mph_list = []
-
             for vehicle in tracker.tracks:
-                print(len(vehicle.trace))
                 if len(vehicle.trace) > 1:
                     for j in range(len(vehicle.trace) - 1):
                         # Draw trace line
@@ -178,11 +161,10 @@ def speed_detection(frame, counter_image):
                         trace_y = vehicle.trace[trace_i][1][0]
 
                         # Check if tracked object has reached the speed detection line
-                        # if trace_y <= Y_THRESH + 25 and trace_y >= Y_THRESH - 25:
                         if True:
                             # cv2.putText(frame, 'I PASSED!', (int(trace_x), int(trace_y)), font, 1, (0, 255, 255), 1,
                             #             cv2.LINE_AA)
-                            # vehicle.passed = True
+                            vehicle.passed = True
 
                             load_lag = (datetime.utcnow() - frame_start_time).total_seconds()
 
@@ -191,80 +173,29 @@ def speed_detection(frame, counter_image):
                             time_dur /= 60
 
                             if counter_image > 0:
+                                print(counter_image)
                                 # print(counter_image)
                                 counter_image -= 1
                                 cv2.imwrite(f'images_collection/speeding_%s.png' % counter_image, orig_frame)
 
                             vehicle.mph = ROAD_DIST_MILES / time_dur
-                            print("===mph==========")
-                            print(vehicle.mph)
-
                             mph_list.append(vehicle.mph)
 
-
                             # If calculated speed exceeds speed limit, save an image of speeding car
-                        if vehicle.mph > HIGHWAY_SPEED_LIMIT:
-                            mph += int(vehicle.mph)
-                        counter += 1
+                            if vehicle.mph > HIGHWAY_SPEED_LIMIT:
+                                mph += int(vehicle.mph)
+                                counter += 1
 
-                        # if vehicle.passed:
-                        #     mph += int(vehicle.mph)
-                        #     counter += 1
+                        if vehicle.passed:
+                            mph += int(vehicle.mph)
+                            counter += 1
 
                     except:
                         pass
 
             # todo setvolume
-            if counter == 0 or is_one_not_dance(mph_list):
-
-                music_control.set_volume(0)
-                avg = 0
-            else:
+            if counter != 0:
                 avg = mph / counter
-                print("==========avg==============")
-                print(avg)
                 calaulate_volum(avg)
-
-            All_mph_list.append((avg, music_control.get_volume()))
-
-                # music_control.set_volume(avg/100)
-                # print(avg)
-
-
-
-    # Display all images
-    img1 = cv2.imread('image.jpg')
-
-    # img = cv2.imread('image.jpg', 0)
-    # cv2.imshow('im', img)
-    # cv2.imshow('res', img1)
-    # print("size")
-    # print(img.shape)
-    # dst = cv2.addWeighted(img, frame)
-    # cv2.imshow('dst', dst)
-
-    # cap1 = cv2.VideoCapture('vtest.avi')
-    #
-    # while (cap1.isOpened()):
-    #     frame1 = cap1.read()
-    #
-    #     gray = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
-    #
-    #     cv2.imshow('framew', gray)
-    #     if cv2.waitKey(1) & 0xFF == ord('q'):
-    #         break
-
-    # cap.release()
-    # cv2.destroyAllWindows()
-    # cv2.imshow('ss', frame)
-    # cv2.imshow('original', frame)
-    #
-    # cv2.imshow('opening/dilation', dilation)
-    # cv2.imshow('background subtraction', fgmask)
-
-    # Sleep to keep video speed consistent
-    time.sleep(1.0 / FPS)
-    return counter_image
-
-
+    return counter_image, avg
 

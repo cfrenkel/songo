@@ -43,7 +43,7 @@ class MainWindow(tk.Frame):
 
         back.pack()
 
-        music_control.play_music('short.mp3')
+        music_control.play_music('mysong.mp3')
         # todo setvolume 0.1]\4/
         music_control.set_volume_start(0)
 
@@ -82,7 +82,7 @@ class MainWindow(tk.Frame):
 
     def video_stream(self):
         _, frame1 = self.cap.read()
-        self.contm = speed_detection.speed_detection(frame1, self.contm)
+        self.contm, mph = speed_detection.speed_detection(frame1, self.contm)
         cv2image1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGBA)
         img1 = Image.fromarray(cv2image1)
         imgtk1 = ImageTk.PhotoImage(image=img1)
