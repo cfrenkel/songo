@@ -1,11 +1,11 @@
 import ctypes
-import time
 
-import facedetect.detect_face
 from PIL import ImageTk, Image
 from main_screem import MainWindow
 import cv2
 import tkinter as tk
+import detect_face
+
 
 root = tk.Tk()
 
@@ -25,7 +25,7 @@ class OpenScreen(tk.Frame):
         self.lmain1 = tk.Label(root, text="hi")
         self.lmain1.pack(side=tk.LEFT)
 
-        myimage1 = tk.PhotoImage(file='welcome2.png')
+        myimage1 = tk.PhotoImage(file='newewl.png')
         label1 = tk.Label(image=myimage1)
         label1.image = myimage  # the reference
         label1.pack(side=tk.LEFT)
@@ -34,7 +34,7 @@ class OpenScreen(tk.Frame):
 
         self.flag = False
 
-        self.count = 100
+        self.count = 150
         self.count1 = 0
 
         self.cap1 = cv2.VideoCapture(0)
@@ -57,10 +57,15 @@ class OpenScreen(tk.Frame):
             self.cap1.release()
             # todo pre
             root.destroy()
+            self.facing()
+
             main = MainWindow()
 
     def desplay_wellcome(self):
         pass
+
+    def facing(self):
+        detect_face.detect_faces('faces.png')
 
     def analyze_picture(self, frame):
         print("in analyze .... ")

@@ -25,10 +25,10 @@ def detect_faces(image_path):
 
 
 
-	cv2.imshow("Faces Found",image)
-	if (cv2.waitKey(0) & 0xFF == ord('q')) or (cv2.waitKey(0) & 0xFF == ord('Q')):
-		cv2.destroyAllWindows()
+	# cv2.imshow("Faces Found",image)
+	# if (cv2.waitKey(0) & 0xFF == ord('q')) or (cv2.waitKey(0) & 0xFF == ord('Q')):
+	# 	cv2.destroyAllWindows()
 
 	return count_of_face
 
-# print(detect_faces('../faces.png'))
+# print(detect_faces('fa.png'))

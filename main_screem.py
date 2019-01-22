@@ -1,29 +1,39 @@
-import time
-from datetime import datetime
-import tkinter as tk
+import ctypes
+
 from PIL import ImageTk, Image
 import cv2
 import tkinter as tk
 import music_control
 import speed_detection
-from tracker import Tracker
-import numpy as np
-
+import threading
 
 class MainWindow(tk.Frame):
     def __init__(self, master=None):
         super().__init__(master)
         self.newMaster = master
         self.master = master
-        self.grid()
+        self.pack()
 
-        myimage = tk.PhotoImage(file='dance.gif')
-        label1 = tk.Label(image=myimage)
-        label1.image = myimage  # the reference
-        label1.grid(row = 0, column = 1)
+        user32 = ctypes.windll.user32
+        self.screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
+        # back = tk.Frame(width=self.screensize[0], height=self.screensize[1], bg='white')
+
 
         self.lmain1 = tk.Label(self, text="hi")
-        self.lmain1.grid(row = 0, column = 0)
+        self.lmain1.grid(row=0, column=0)
+
+        myimage = tk.PhotoImage(file='songo.png')
+        label = tk.Label(self, image=myimage)
+        label.image = myimage  # the reference
+        label.grid(row=1, column=0)
+
+        # self.lmain2 = tk.Label(self, text="hi")
+        # self.lmain2.grid(row=0, column=1)
+
+
+
+        # self.thread = threading.Thread(target=self.facing).start()
+        # self.facing()
 
 
 
@@ -31,11 +41,11 @@ class MainWindow(tk.Frame):
         # todo setvolume 0.1]\4/
         music_control.set_volume_start(0)
 
+
         self.flag = False
         self.counter = 150
         self.cap = cv2.VideoCapture(0)
         self.video_stream()
-
 
 
     def video_stream(self):
