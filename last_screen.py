@@ -29,6 +29,15 @@ def small_image(list_image):
         imjlist.append(img)
     return imjlist
 
+def big_image(list_image):
+    imjlist = []
+    for i in list_image:
+        img = Image.open(i)
+        si = img.size
+        img = img.resize((int(si[0] * 2.3), int(si[0] * 2.3)), Image.ANTIALIAS)
+        imjlist.append(img)
+    return imjlist
+
 def small_image1(my_image):
 
     img = my_image
@@ -65,7 +74,7 @@ def create_collage_5(imgs):
     imgs[4] = imgs[4].resize((300, 200))
     target_img.paste(imgs[4], (300, 400))
 
-    return target_img
+    target_img.save('coll5.png')
 
 def create_collage_4(imgs):
     target_img = Image.new("RGB", (600, 600))
@@ -78,7 +87,7 @@ def create_collage_4(imgs):
     target_img.paste(imgs[2], (300, 0))
     target_img.paste(imgs[3], (300, 300))
 
-    return target_img
+    target_img.save('coll4.png')
 
 
 def create_collage_6(imgs):
@@ -94,7 +103,8 @@ def create_collage_6(imgs):
     target_img.paste(imgs[3], (400,200))
     target_img.paste(imgs[4], (400,400))
     target_img.paste(imgs[5], (200,400))
-    return target_img
+
+    target_img.save('coll6.png')
 
 def create_collage_8(imgs):
     target_img = Image.new("RGB", (600, 600))
@@ -115,7 +125,8 @@ def create_collage_8(imgs):
     target_img.paste(imgs[5], (300, 200))
     imgs[5] = imgs[5].resize((300, 200))
     target_img.paste(imgs[5], (300, 400))
-    return target_img
+
+    target_img.save('coll8.png')
 
 def create_collage_2(imgs):
     target_img = Image.new("RGB", (1200, 600))
@@ -123,7 +134,7 @@ def create_collage_2(imgs):
     target_img.paste(imgs[0], (0, 0))
     target_img.paste(imgs[1], (600, 0))
 
-    target_img.save('2coll.png')
+    target_img.save('coll2.png')
 
 def create_collage_3(imgs):
     target_img = Image.new("RGB", (1800, 600))
@@ -132,4 +143,4 @@ def create_collage_3(imgs):
     target_img.paste(imgs[1], (600, 0))
     target_img.paste(imgs[2], (1200, 0))
 
-    return target_img
+    target_img.save('coll3.png')

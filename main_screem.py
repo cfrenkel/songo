@@ -31,34 +31,8 @@ class MainWindow(tk.Frame):
         # self.b.grid(row=0, column=1)
 
         self.contm = 9
-        # File = os.listdir('extracted/')
-        #
-        # size = len(File)
-        # mini = min(size, 9)
-        # img = []
-        # for i in range(mini):
-        #     FileDir = 'extracted/' + File[i]
-        #     img.append(FileDir)
-        #     print(FileDir)
 
-        # if len(img) == 1:
-        #     self.myimage2 = tk.PhotoImage(file=img[0])
-        #     print("here ..........")
-        #     self.b = tk.Label(self, image=self.myimage2, bg = 'red')
-        #     self.b.image = self.myimage2
-        #     self.b.grid(row=0, column=1)
-        # elif len(img) == 2:
-        #     img = last_screen.small_image(img)
-        #     last_screen.create_collage_2(img)
-        #     self.myimage2 = tk.PhotoImage(file='2coll.png')
-        #     self.b = tk.Label(self, image=im, bg='red')
-        #     self.b.image = self.myimage2
-        #     self.b.grid(row=0, column=1)
-
-
-
-
-
+        self.calculate_face()
 
         myimage1 = tk.PhotoImage(file='songo.png')
         a = tk.Label(self, image=myimage1)
@@ -74,9 +48,37 @@ class MainWindow(tk.Frame):
         music_control.set_volume_start(0)
 
         self.flag = False
-        self.counter = 300
+        self.counter = 500
         self.cap = cv2.VideoCapture(0)
         self.video_stream()
+
+    def calculate_face(self):
+        File = os.listdir('extracted/')
+
+        size = len(File)
+        mini = min(size, 9)
+        img = []
+        for i in range(mini):
+            FileDir = 'extracted/' + File[i]
+            img.append(FileDir)
+            print(FileDir)
+
+        if len(img) == 1:
+            self.myimage1 = tk.PhotoImage(file=img[0])
+            print("here ..........")
+            self.b = tk.Label(self, image=self.myimage1, bg = 'red')
+            self.b.image = self.myimage2
+            self.b.grid(row=0, column=1)
+
+        # elif len(img) == 2:
+        #
+        #     img = last_screen.big_image(img)
+        #     im = last_screen.create_collage_2(img)
+        #     self.myimage2 = tk.PhotoImage(file='coll2.png')
+        #
+        #     self.b = tk.Label(self, image=im, bg='red')
+        #     self.b.image = self.myimage2
+        #     self.b.grid(row=0, column=1)
 
     def video_stream(self):
         _, frame1 = self.cap.read()
