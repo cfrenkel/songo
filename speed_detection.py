@@ -265,3 +265,6 @@ def speed_detection(frame, counter_image):
     # Sleep to keep video speed consistent
     time.sleep(1.0 / FPS)
     return counter_image
+
+
+

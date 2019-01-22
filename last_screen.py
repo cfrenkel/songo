@@ -45,6 +45,7 @@ def small_image1(my_image):
 #         imjlist.append(img)
 #     return imjlist
 
+
 def last_screen(list_image):
     lm_list = small_image(list_image)
     return create_collage_9(lm_list)
