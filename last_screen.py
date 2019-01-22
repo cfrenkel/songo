@@ -27,9 +27,16 @@ def small_image(list_image):
         si = img.size
         img = img.resize((int(si[0] / 3.5), int(si[0] / 3.5)), Image.ANTIALIAS)
         imjlist.append(img)
-    return create_collage_9(imjlist)
+    return imjlist
+
+
+
+def last_screen(list_image):
+    lm_list = small_image(list_image)
+    return create_collage_9(lm_list)
 
 
 a = 'C:\\Users\\שרה ויסברגר\\Pictures\\Camera Roll\\tt.jpg'
 g = [a, a, a, a, a, a, a, a, a]
-small_image(g)
+last_screen(g)
+
