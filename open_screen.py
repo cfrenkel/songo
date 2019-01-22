@@ -55,7 +55,7 @@ class OpenScreen(tk.Frame):
         if not self.flag:
             self.lmain1.after(1, self.video_stream)
         else:
-            music_control.play_music('open.mp3')
+            music_control.play_music('succ2.mp3')
             time.sleep(6)
             self.cap1.release()
             # todo pre

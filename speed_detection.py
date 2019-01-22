@@ -172,7 +172,7 @@ def speed_detection(frame, counter_image):
                             time_dur /= 60
                             time_dur /= 60
 
-                            if counter_image > 0:
+                            if counter_image > 0 and music_control.get_volume() > 0.6:
                                 print(counter_image)
                                 # print(counter_image)
                                 counter_image -= 1

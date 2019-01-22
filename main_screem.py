@@ -1,6 +1,8 @@
 import ctypes
 import os
 import time
+from tkinter import ttk
+
 import faces
 from PIL import ImageTk, Image
 import cv2
@@ -46,9 +48,33 @@ class MainWindow(tk.Frame):
         self.flag = False
         self.counter = 500
         self.cap = cv2.VideoCapture(0)
+
+        self.progress = ttk.Progressbar(self, orient="horizontal",
+                                        length=200, mode="determinate")
+
+        self.bytes = 0
+        self.maxbytes = 0
+        self.mph = 0
+
+        self.progress["value"] = 5000
+        self.maxbytes = 50000
+        self.progress["maximum"] = 50000
+
+        self.progress.grid(row=1, column=2)
+
+
         self.video_stream()
 
+    def read_bytes(self, mph):
+        '''simulate reading mph bytes; update progress bar'''
+        self.bytes += mph
+        self.progress["value"] = self.bytes
+        if self.bytes >= self.maxbytes:
+            self.bytes = 0
+
+
     def calculate_face(self):
+
         File = os.listdir('extracted/')
 
         size = len(File)
@@ -85,6 +111,11 @@ class MainWindow(tk.Frame):
     def video_stream(self):
         _, frame1 = self.cap.read()
         self.contm, mph = speed_detection.speed_detection(frame1, self.contm)
+        if (mph > self.mph):
+            self.read_bytes(mph)
+        else:
+            self.read_bytes(mph - self.mph)
+        self.mph = mph
         cv2image1 = cv2.cvtColor(frame1, cv2.COLOR_BGR2RGBA)
         img1 = Image.fromarray(cv2image1)
         imgtk1 = ImageTk.PhotoImage(image=img1)
@@ -119,6 +150,15 @@ class MainWindow(tk.Frame):
         self.b = tk.Label(self, image=self.myimage2, bg = 'red')
         self.b.image = self.myimage2
         self.b.grid(row=0, column=1)
+
+        self.bb.config(image=None)
+        #self.b.grid(row=0, column=2)
+        #
+        # self.b = tk.Label(self, bg='red').config(image=None)
+        # self.b.grid(row=0, column=3)
+        #
+        # self.b = tk.Label(self, bg='red').config(image=None)
+        # self.b.grid(row=0, column=4)
 
         # ------------------------------------
 
