@@ -11,7 +11,7 @@ class Conclusion(tk.Frame):
     def __init__(self, master, speed, volume):
         super().__init__(master)
         self.master = master
-        self.pack()
+        # self.pack()
 
         user32 = ctypes.windll.user32
         self.screensize = user32.GetSystemMetrics(0), user32.GetSystemMetrics(1)
@@ -37,8 +37,8 @@ class Conclusion(tk.Frame):
 
     def set_background_video(self):
         self.cap1 = cv2.VideoCapture('videoplayback.mp4')
-        self.lmain1 = tk.Label(root, text="hi")
-        self.lmain1.pack(side="top")
+        self.lmain1 = tk.Label(self, text="hi")
+        self.lmain1.grid(row = 0, colmn = 0)
         self.video_stream()
 
 
@@ -48,13 +48,12 @@ class Conclusion(tk.Frame):
     def set_graph(self):
         size_graph = plt.figure(figsize=(5, 5))
         result_graph = FigureCanvasTkAgg(size_graph, self)
-        result_graph.get_tk_widget().pack(side="left")
+        result_graph.get_tk_widget().grid(row = 0, colmn = 1)
+
+        print(self.speed)
+        print(self.volume)
 
         plt.plot([self.speed, self.volume])
 
         result_graph.draw()
 
-
-root = tk.Tk()
-app = Conclusion(master=root, speed=[23, 54, 6, 88, 34, 32, 5, 7], volume=[4,33,8,2,67,98,46,3])
-app.mainloop()

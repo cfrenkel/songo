@@ -1,5 +1,10 @@
-from speed_detection import speed_detection
+import detect_face
 
 # todo ui interface
-print("aaaaa")
-speed_detection()
+from open_screen import OpenScreen
+
+o = OpenScreen()
+# root = tk.Tk()
+# root.mainloop()
+# detect_face.detect_faces('fa.png')
+
