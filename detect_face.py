@@ -17,8 +17,8 @@ def detect_faces(image_path):
 
 	for x,y,w,h in faces:
 	    sub_img=image[y-10:y+h+10,x-10:x+w+10]
-	    os.chdir("Extracted")
-	    cv2.imwrite(str(randint(0,10000))+".jpg",sub_img)
+	    os.chdir("extracted")
+	    cv2.imwrite(str(randint(0,10000))+".png",sub_img)
 	    os.chdir("../")
 	    cv2.rectangle(image,(x,y),(x+w,y+h),(255, 255,0),2)
 	count_of_face = print(len(faces))

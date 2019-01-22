@@ -1,11 +1,12 @@
 import ctypes
+import time
 
 from PIL import ImageTk, Image
 from main_screem import MainWindow
 import cv2
 import tkinter as tk
 import detect_face
-
+import music_control
 
 root = tk.Tk()
 
@@ -54,11 +55,11 @@ class OpenScreen(tk.Frame):
         if not self.flag:
             self.lmain1.after(1, self.video_stream)
         else:
+            music_control.play_music('open.mp3')
+            time.sleep(6)
             self.cap1.release()
             # todo pre
             root.destroy()
-            self.facing()
-
             main = MainWindow()
 
     def desplay_wellcome(self):
@@ -74,6 +75,7 @@ class OpenScreen(tk.Frame):
             return False
         if self.count == 0:
             cv2.imwrite('faces.png', frame)
+            self.facing()
             return True
 
 

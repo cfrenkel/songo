@@ -101,12 +101,12 @@ music_control.play_music('Ava_nagila.mp3')
 music_control.set_volume_start(0)
 All_mph_list = []
 
-def speed_detection(frame):
+def speed_detection(frame, counter_image):
 
     if not music_control.get_busy():
         print(All_mph_list)
         conclusion(All_mph_list)
-        return
+        return counter_image
 
     centers = []
     frame_start_time = datetime.utcnow()
@@ -190,6 +190,11 @@ def speed_detection(frame):
                             time_dur /= 60
                             time_dur /= 60
 
+                            if counter_image > 0:
+                                # print(counter_image)
+                                counter_image -= 1
+                                cv2.imwrite(f'images_collection/speeding_%s.png' % counter_image, orig_frame)
+
                             vehicle.mph = ROAD_DIST_MILES / time_dur
                             print("===mph==========")
                             print(vehicle.mph)
@@ -259,3 +264,4 @@ def speed_detection(frame):
 
     # Sleep to keep video speed consistent
     time.sleep(1.0 / FPS)
+    return counter_image
