@@ -30,7 +30,6 @@ def small_image(list_image):
     return imjlist
 
 
-
 def last_screen(list_image):
     lm_list = small_image(list_image)
     return create_collage_9(lm_list)
