@@ -41,7 +41,7 @@ class MainWindow(tk.Frame):
 
         back.pack()
 
-        music_control.play_music('mysong.mp3')
+        music_control.play_music('kapaim.mp3')
         # todo setvolume 0.1]\4/
         music_control.set_volume_start(0)
 
@@ -60,7 +60,7 @@ class MainWindow(tk.Frame):
         self.maxbytes = 50000
         self.progress["maximum"] = 50000
 
-        self.progress.grid(row=1, column=2)
+        self.progress.grid(row=1, column=1)
 
 
         self.video_stream()
@@ -86,27 +86,44 @@ class MainWindow(tk.Frame):
             print(FileDir)
 
         i = 0
-        for im in img:
-            self.myimage = tk.PhotoImage(file=im)
-            self.bb = tk.Label(self, image=self.myimage, bg='red')
-            self.bb.image = self.myimage
-            r, c = self.calc(i)
-            i += 1
-            if r == -1 and c == -1:
-                break
-            self.bb.grid(row=r, column=c)
+        self.in_grid = tk.Frame(self, bg='white')
 
-    def calc(self, i):
+        for im in img:
+            i += 1
+            self.calc(i, im,self.in_grid)
+            # self.myimage = tk.PhotoImage(file=im)
+            # self.bb = tk.Label(self, image=self.myimage, bg='red')
+            # self.bb.image = self.myimage
+            # r, c = self.calc(i)
+            #
+            # if r == -1 and c == -1:
+            #     break
+            # self.bb.grid(row=r, column=c)
+        self.in_grid.grid(row=0,column=1)
+
+    def calc(self, i, im, in_grid):
+
         if i == 0:
-            return 0,1
+            self.myimage0 = tk.PhotoImage(file=im)
+            self.bb0 = tk.Label(in_grid, image=self.myimage0, bg='red')
+            self.bb0.image = self.myimage0
+            self.bb0.grid(row=0, column=0)
         if i == 1:
-            return 0,2
+            self.myimage1 = tk.PhotoImage(file=im)
+            self.bb1 = tk.Label(in_grid, image=self.myimage1, bg='red')
+            self.bb1.image = self.myimage1
+            self.bb1.grid(row=0, column=1)
         if i == 2:
-            return 0,3
+            self.myimage2 = tk.PhotoImage(file=im)
+            self.bb2 = tk.Label(in_grid, image=self.myimage2, bg='red')
+            self.bb2.image = self.myimage2
+            self.bb2.grid(row=1, column=0)
         if i == 3:
-            return 0,4
-        else:
-            return -1,-1
+            self.myimage3 = tk.PhotoImage(file=im)
+            self.bb3 = tk.Label(in_grid, image=self.myimage3, bg='red')
+            self.bb3.image = self.myimage3
+            self.bb3.grid(row=1, column=1)
+
 
     def video_stream(self):
         _, frame1 = self.cap.read()
@@ -128,6 +145,7 @@ class MainWindow(tk.Frame):
         else:
             print("finish")
             music_control.play_music('succ.mp3')
+            time.sleep(5)
             self.action_collage()
             music_control.play_music('succ.mp3')
             # self.cap1.release()
@@ -136,6 +154,8 @@ class MainWindow(tk.Frame):
             self.video_stream1()
 
     def action_collage(self):
+
+
         File = os.listdir('images_collection/')
         lf = []
         for i in range(9):
@@ -145,13 +165,32 @@ class MainWindow(tk.Frame):
         # ----------------------------------
         imgee = last_screen.small_image1(imgee)
         imgee.save('collage9.png')
+
+        self.destroy_faces()
+
         self.myimage2 = tk.PhotoImage(file='collage9.png')
         print("here ..........")
         self.b = tk.Label(self, image=self.myimage2, bg = 'red')
         self.b.image = self.myimage2
         self.b.grid(row=0, column=1)
 
-        self.bb.config(image=None)
+
+    def destroy_faces(self):
+        self.in_grid.destroy()
+        self.progress.destroy()
+
+    def dest(self,i):
+        if i == 0:
+            self.bb0.config(image='')
+        if i == 1:
+            self.bb1.config(image='')
+
+        if i == 2:
+            self.bb2.config(image='')
+
+        if i == 3:
+            self.bb3.config(image='')
+
         #self.b.grid(row=0, column=2)
         #
         # self.b = tk.Label(self, bg='red').config(image=None)
@@ -179,6 +218,8 @@ class MainWindow(tk.Frame):
             time.sleep(5)
             self.cap1.release()
             cv2.destroyAllWindows()
+            music_control.play_music('succ.mp3')
+            time.sleep(5)
 
             # last = ImageWindow()
             # self.conclusion = Conclusion(self.newMaster, speed=[23, 54, 6, 88, 34, 32, 5, 7], volume=[4, 33, 8,2,67,98,46,3])

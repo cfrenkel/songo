@@ -35,7 +35,7 @@ class OpenScreen(tk.Frame):
 
         self.flag = False
 
-        self.count = 100
+        self.count = 50
         self.count1 = 0
 
         self.cap1 = cv2.VideoCapture(0)

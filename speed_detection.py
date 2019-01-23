@@ -10,41 +10,41 @@ from tracker import Tracker
 
 
 def calaulate_volum(avg):
-    print("========vol=================")
+    # print("========vol=================")
 
     if avg > 500:
         music_control.set_volume(1)
-        print('1')
+        # print('1')
     elif avg <= 500 and avg > 400:
-        print('0.9')
+        # print('0.9')
         music_control.set_volume(0.9)
     elif avg <= 400 and avg > 320:
         music_control.set_volume(0.8)
-        print('0.8')
+        # print('0.8')
     elif avg <= 320 and avg > 250:
         music_control.set_volume(0.7)
-        print('0.7')
+        # print('0.7')
     elif avg <= 250 and avg > 210:
         music_control.set_volume(0.6)
-        print('0.6')
+        # print('0.6')
     elif avg <= 210 and avg > 120:
         music_control.set_volume(0.5)
-        print('0.5')
+        # print('0.5')
     elif avg <= 120 and avg > 80:
         music_control.set_volume(0.4)
-        print('0.4')
+        # print('0.4')
     elif avg <= 80 and avg > 70:
         music_control.set_volume(0.3)
-        print('0.3')
+        # print('0.3')
     elif avg <= 70 and avg > 30:
         music_control.set_volume(0.2)
-        print('0.2')
+        # print('0.2')
     elif avg <= 30 and avg > 18:
         music_control.set_volume(0.1)
-        print('0.1')
+        # print('0.1')
     elif avg <= 18:
         music_control.set_volume(0)
-        print('0')
+        # print('0')
 
 FPS = 30
 '''
@@ -86,6 +86,8 @@ tracker = Tracker(80, 3, 2, 1)
 # # todo setvolume 0.1
 # music_control.set_volume(0.1)
 
+vol_list = []
+
 def speed_detection(frame, counter_image):
     if not music_control.get_busy():
         # print(All_mph_list)
@@ -98,7 +100,7 @@ def speed_detection(frame, counter_image):
     orig_frame = copy.copy(frame)
 
     #  Draw line used for speed detection
-    cv2.line(frame, (0, Y_THRESH), (640, Y_THRESH), (255, 0, 0), 2)
+    #cv2.line(frame, (0, Y_THRESH), (640, Y_THRESH), (255, 0, 0), 2)
 
     # Convert frame to grayscale and perform background subtraction
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -125,13 +127,13 @@ def speed_detection(frame, counter_image):
                     center = np.array([[x + w / 2], [y + h / 2]])
                     centers.append(np.round(center))
 
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                    #cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
             else:
                 if w >= blob_min_width_far and h >= blob_min_height_far:
                     center = np.array([[x + w / 2], [y + h / 2]])
                     centers.append(np.round(center))
 
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                    #cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255, 2))
 
         if centers:
             tracker.update(centers)
@@ -148,7 +150,7 @@ def speed_detection(frame, counter_image):
                         x2 = vehicle.trace[j + 1][0][0]
                         y2 = vehicle.trace[j + 1][1][0]
 
-                        cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 255), 2)
+                        #cv2.line(frame, (int(x1), int(y1)), (int(x2), int(y2)), (0, 255, 255), 2)
 
                     try:
                         '''
@@ -172,14 +174,19 @@ def speed_detection(frame, counter_image):
                             time_dur /= 60
                             time_dur /= 60
 
-                            if counter_image > 0 and music_control.get_volume() > 0.6:
-                                print(counter_image)
-                                # print(counter_image)
-                                counter_image -= 1
-                                cv2.imwrite(f'images_collection/speeding_%s.png' % counter_image, orig_frame)
 
                             vehicle.mph = ROAD_DIST_MILES / time_dur
                             mph_list.append(vehicle.mph)
+
+                            if counter_image > 0 and music_control.get_volume() not in vol_list:
+                                print("write picture ... 6")
+                                print(counter_image)
+                                print(vol_list)
+                                # print(counter_image)
+                                counter_image -= 1
+                                vol_list.append(music_control.get_volume())
+                                cv2.imwrite(f'images_collection/speeding_%s.png' % counter_image, orig_frame)
+
 
                             # If calculated speed exceeds speed limit, save an image of speeding car
                             if vehicle.mph > HIGHWAY_SPEED_LIMIT:

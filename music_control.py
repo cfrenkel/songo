@@ -15,7 +15,7 @@ def set_volume_start(vol):
 
 def set_volume(vol):
     curr_vol = mixer.music.get_volume()
-    print("{} currr".format(curr_vol))
+    # print("{} currr".format(curr_vol))
     if curr_vol >= vol:
         while curr_vol > vol:
             print(curr_vol)
